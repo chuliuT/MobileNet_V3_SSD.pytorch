@@ -306,6 +306,12 @@ class MobileNetV3(nn.Module):
         x = self.AdaptiveAvgPool2d(x)
         x = self.stage7(x)
         Scale6 = x
+        # print(Scale1.shape)
+        # print(Scale2.shape)
+        # print(Scale3.shape)
+        # print(Scale4.shape)
+        # print(Scale5.shape)
+        # print(Scale6.shape)
         return Scale1,Scale2,Scale3,Scale4,Scale5,Scale6
 
     def _initialize_weights(self):

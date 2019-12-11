@@ -81,15 +81,15 @@ def multibox(num_classes=21):
     loc_layers += [nn.Conv2d(160, anchor_num[3] * 4, kernel_size=3, padding=1)]
     conf_layers += [nn.Conv2d(160, anchor_num[3] * num_classes, kernel_size=3, padding=1)]
     # ===================================================================================#
-    loc_layers += [nn.Conv2d(160, anchor_num[3] * 4, kernel_size=3, padding=1)]
-    conf_layers += [nn.Conv2d(160, anchor_num[3] * num_classes, kernel_size=3, padding=1)]
+    loc_layers += [nn.Conv2d(160, anchor_num[4] * 4, kernel_size=3, padding=1)]
+    conf_layers += [nn.Conv2d(160, anchor_num[4] * num_classes, kernel_size=3, padding=1)]
     # ===================================================================================#
-    loc_layers += [nn.Conv2d(160, anchor_num[3] * 4, kernel_size=3, padding=1)]
-    conf_layers += [nn.Conv2d(160, anchor_num[3] * num_classes, kernel_size=3, padding=1)]
+    loc_layers += [nn.Conv2d(160, anchor_num[5] * 4, kernel_size=3, padding=1)]
+    conf_layers += [nn.Conv2d(160, anchor_num[5] * num_classes, kernel_size=3, padding=1)]
     return (loc_layers, conf_layers)
 
 
-def build_net(phase, size=300, num_classes=2):
+def build_net(phase, size=300, num_classes=21):
     if phase != "test" and phase != "train":
         print("Error: Phase not recognized")
         return
