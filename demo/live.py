@@ -7,9 +7,9 @@ from imutils.video import FPS, WebcamVideoStream
 import argparse
 
 parser = argparse.ArgumentParser(description='Single Shot MultiBox Detection')
-parser.add_argument('--weights', default='weights/ssd_300_VOC0712.pth',
+parser.add_argument('--weights', default='../weights/VOC.pth',
                     type=str, help='Trained state_dict file path')
-parser.add_argument('--cuda', default=False, type=bool,
+parser.add_argument('--cuda', default=True, type=bool,
                     help='Use cuda in live demo')
 args = parser.parse_args()
 
@@ -28,7 +28,7 @@ def cv2_demo(net, transform):
         scale = torch.Tensor([width, height, width, height])
         for i in range(detections.size(1)):
             j = 0
-            while detections[0, i, j, 0] >= 0.6:
+            while detections[0, i, j, 0] >= 0.5:
                 pt = (detections[0, i, j, 1:] * scale).cpu().numpy()
                 cv2.rectangle(frame,
                               (int(pt[0]), int(pt[1])),
@@ -62,6 +62,7 @@ def cv2_demo(net, transform):
                 if key2 == ord('p'):  # resume
                     break
         cv2.imshow('frame', frame)
+        # print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
         if key == 27:  # exit
             break
 
@@ -70,11 +71,11 @@ if __name__ == '__main__':
     import sys
     from os import path
     sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-
+    # COCO_ROOT = '../data/'
     from data import BaseTransform, VOC_CLASSES as labelmap
-    from ssd import build_ssd
+    from models.Mobile_Net_V3_SSD import build_net
 
-    net = build_ssd('test', 300, 21)    # initialize SSD
+    net = build_net('test', 300, 21)    # initialize SSD
     net.load_state_dict(torch.load(args.weights))
     transform = BaseTransform(net.size, (104/256.0, 117/256.0, 123/256.0))
 

@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 from layers import *
+from data import coco,voc
 import torchvision.transforms as transforms
 import torchvision.models as models
 import torch.backends.cudnn as cudnn
@@ -16,6 +17,9 @@ class MobileNetV3(nn.Module):
         super(MobileNetV3, self).__init__()
         self.phase = phase
         self.num_classes = num_classes
+        self.cfg = (coco, voc)[num_classes == 21]
+        self.priorbox = PriorBox(self.cfg)
+        self.priors = Variable(self.priorbox.forward(), volatile=True)
         self.size = size
 
         self.base = mobilenetv3()
@@ -24,6 +28,7 @@ class MobileNetV3(nn.Module):
         self.conf = nn.ModuleList(head[1])
         if self.phase == 'test':
             self.softmax = nn.Softmax(dim=-1)
+            self.detect = Detect(num_classes, 0, 200, 0.01, 0.45)
 
     def forward(self, x):
         loc = list()
@@ -42,9 +47,11 @@ class MobileNetV3(nn.Module):
         conf = torch.cat([o.view(o.size(0), -1) for o in conf], 1)
 
         if self.phase == "test":
-            output = (
+            output = self.detect(
                 loc.view(loc.size(0), -1, 4),  # loc preds
-                self.softmax(conf.view(-1, self.num_classes)),  # conf preds
+                self.softmax(conf.view(conf.size(0), -1,
+                                       self.num_classes)),  # conf preds
+                self.priors.type(type(x.data))  # default boxes
             )
         else:
             output = (
