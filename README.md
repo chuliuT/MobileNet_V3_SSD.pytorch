@@ -1,5 +1,93 @@
 # MobileNet_V3_SSD.pytorch
-code based：
+## Install
+
+1. Install [PyTorch](http://pytorch.org/) 1.0 are command.
+2. Clone this repository.(Note: We currently only support Python 3+.)
+3. git clone https://github.com/chuliuT/MobileNet_V3_SSD.pytorch.git
+
+## Examples
+
+![](./figures/det_pic.png)
+
+![](./figures/det_pic2.png)
+
+![](./figures/det_pic3.png)
+
+## Dataset
+
+To make things easy, we provide bash scripts to handle the dataset downloads and setup for you.  We also provide simple dataset loaders that inherit `torch.utils.data.Dataset`, making them fully compatible with the `torchvision.datasets` [API](http://pytorch.org/docs/torchvision/datasets.html).
+
+
+### COCO
+Microsoft COCO: Common Objects in Context
+
+##### Download COCO 2014
+```Shell
+# specify a directory for dataset to be downloaded into, else default is ~/data/
+sh data/scripts/COCO2014.sh
+```
+
+### VOC Dataset
+PASCAL VOC: Visual Object Classes
+
+##### Download VOC2007 trainval & test
+```Shell
+# specify a directory for dataset to be downloaded into, else default is ~/data/
+sh data/scripts/VOC2007.sh # <directory>
+```
+
+##### Download VOC2012 trainval
+```Shell
+# specify a directory for dataset to be downloaded into, else default is ~/data/
+sh data/scripts/VOC2012.sh # <directory>
+```
+
+## Training SSD
+- To train SSD using the train script simply specify the parameters listed in `train.py` as a flag or manually change them.
+
+```Shell
+python3 train.py
+```
+
+## Evaluation
+To evaluate a trained network:
+
+```Shell
+python3 eval.py
+```
+
+## Performance
+
+#### VOC2007 Test
+
+##### mAP
+
+| Original | Converted weiliu89 weights | From scratch w/o data aug | From scratch w/ data aug |
+| :------: | :------------------------: | :-----------------------: | :----------------------: |
+|  77.2 %  |            None            |           None            |          49.26%          |
+
+##### FPS(there have some unknown bugs)
+###### cpu:5 fps
+
+## Demos
+
+```
+cd demo
+python3 demo.py
+```
+
+## Camera
+
+```
+cd demo
+python3 live.py
+```
+
+## ***Note:*** Unfortunately, Mean-ap is too low,the fps measurement is worst
+
+## Code References：
+
+https://github.com/kuan-wang/pytorch-mobilenet-v3
 
 https://github.com/songwsx/steel-detect
 
@@ -7,8 +95,11 @@ https://github.com/amdegroot/ssd.pytorch
 
 -- update date 2019.12.09
 
+add modified training code
 
+-- update date 2019.12.11
 
+fix a model bug in test mode
 
 VOC07 metric? Yes
 AP for aeroplane = 0.6109
@@ -32,32 +123,10 @@ AP for sofa = 0.5607
 AP for train = 0.6718
 AP for tvmonitor = 0.4945
 Mean AP = 0.4926
-~~~~~~~~
-Results:
-0.611
-0.585
-0.318
-0.370
-0.146
-0.624
-0.653
-0.591
-0.256
-0.436
-0.561
-0.521
-0.669
-0.602
-0.557
-0.162
-0.463
-0.561
-0.672
-0.494
-0.493
-~~~~~~~~
 
---------------------------------------------------------------
 Results computed with the **unofficial** Python eval code.
+
 Results should be very close to the official MATLAB eval code.
---------------------------------------------------------------
+
+-- update date 2019.12.12
+
